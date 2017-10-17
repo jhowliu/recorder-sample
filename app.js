@@ -4,6 +4,7 @@ const path = require('path'),
       multer = require('multer'),
       bodyParser = require('body-parser');
 
+const fs = require('fs');
 
 let app = express();
 
@@ -27,17 +28,30 @@ app.get('/', function(req, res) {
 });
 
 app.post('/upload', function(req, res) {
+    console.log(req);
     const files = req.files;
 
     if (files === undefined) {
         return res.json({ success: false, message: "failed to upload file." });
     } else {
-        console.log(files);
+        const buffer = files[0].buffer;
+        const filename = files[0].originalname;
+
+        writeAudio(buffer, filename);
         return res.json({ success: true, message: "start to parsing data." });
     }
 });
 
-app.listen(app.get('port'), function() {
+
+function writeAudio(buffer, filename) {
+    const file = path.resolve('./audio', filename);
+
+    fs.writeFile(file, buffer, function(err) {
+        if (err) throw err;
+    });
+}
+
+app.listen(app.get('port'), 'localhost', function() {
     console.log("Server started on port: " + app.get('port'));    
 })
 

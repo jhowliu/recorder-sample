@@ -29,9 +29,7 @@ function startRecording(e) {
 };
 
 function stopRecording(e) {
-    recorder.stopRecording();
-    recorder.save('audio/tmp.wav');
-    recorder.reset();
+    recorder.stopRecording(postFile);
 };
 
 function postFile() {
@@ -42,7 +40,8 @@ function postFile() {
         type: 'audio/webm'
     });
 
-    xhr2('/upload', file, function(res) {
+    xhr('/upload', file, function(res) {
+        console.log(file);
         console.log(res);
     })
 
@@ -50,7 +49,7 @@ function postFile() {
 }
 
 // AJAX
-function xhr2(url, data, callback) {
+function xhr(url, data, callback) {
     let request = new XMLHttpRequest();
 
     request.onreadystatechange = function() {
