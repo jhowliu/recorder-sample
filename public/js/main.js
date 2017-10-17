@@ -15,12 +15,13 @@ function captureUserMedia(callback) {
 }
 
 function startRecording(e) {
-    captureUserMedia(function(stream) {
-        mediaStream = stream;
+    captureUserMedia(function(audioStream) {
+        mediaStream = audioStream;
         
-        recorder = RecordRTC(mediaStream, {
+        recorder = RecordRTC(audioStream, {
             type: 'audio',
-            recorderType: MediaStreamRecorder
+            recorderType: StereoAudioRecorder,
+            numberOfAudioChannels: 1
         })
 
         recorder.startRecording();
@@ -34,10 +35,10 @@ function stopRecording(e) {
 
 function postFile() {
     let blob = recorder.getBlob();
-    let filename = generateRandomString() + '.webm';
+    let filename = generateRandomString() + '.wav';
 
     let file = new File([blob], filename, {
-        type: 'audio/webm'
+        type: 'audio/wav'
     });
 
     xhr('/upload', file, function(res) {
